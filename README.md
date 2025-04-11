@@ -75,4 +75,4 @@ pre-commit run --all-files
 - [Rust book: Cargo workspaces](https://doc.rust-lang.org/book/ch14-03-cargo-workspaces.html)
 - [Cargo book: Workspaces](https://doc.rust-lang.org/cargo/reference/workspaces.html)
 - [cargo-workspaces](https://crates.io/crates/cargo-workspaces)
-    - A tool that optimizes the workflow around cargo workspaces
+  - A tool that optimizes the workflow around cargo workspaces
