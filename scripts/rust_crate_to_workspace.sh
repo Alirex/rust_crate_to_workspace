@@ -10,13 +10,7 @@ set -o pipefail
 set -o nounset
 # [bash_init]-[END]
 
-#if [[ -n "$(git status -s)" ]]; then
-#  echo "Git repository is dirty. Refusing to evaluate."
-#  exit 1
-#fi
-
 # Check if the script has anything uncommitted, except for the this script
-
 name_of_script="$(basename "$0")"
 # shellcheck disable=SC2143
 if [[ -n "$(git status --short | grep --quiet --invert-match "${name_of_script}")" ]]; then
