@@ -34,7 +34,16 @@ Moved:
 
 Nothing else is moved. Because it is less predictable.
 
-Commit the changes after running the script.
+Added:
+
+- Cargo.toml (for workspace)
+
+Extra:
+
+- new cargo.toml is added to git staging area.
+
+Now you can commit the changes after running the script.
+Because, you may want to check the changes before committing and set specific commit message.
 
 ### Why move in the "rust" folder?
 
