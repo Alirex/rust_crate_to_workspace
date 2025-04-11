@@ -1,5 +1,14 @@
 #!/usr/bin/env bash
 
+# [bash_init]-[BEGIN]
+# Exit whenever it encounters an error, also known as a non–zero exit code.
+set -o errexit
+# Return value of a pipeline is the value of the last (rightmost) command to exit with a non-zero status,
+#   or zero if all commands in the pipeline exit successfully.
+set -o pipefail
+# Treat unset variables and parameters other than the special parameters ‘@’ or ‘*’ as an error when performing parameter expansion.
+set -o nounset
+# [bash_init]-[END]
 
 #if [[ -n "$(git status -s)" ]]; then
 #  echo "Git repository is dirty. Refusing to evaluate."
@@ -28,7 +37,7 @@ echo "Creating workspace in $path_to_main_repo"
 path_to_root_toml="${path_to_main_repo}/Cargo.toml"
 
 # Check is have the Cargo.toml file
-if [[ ! -f "${path_to_root_toml}" ]]; then
+if [[ ! -f ${path_to_root_toml} ]]; then
   echo "Cargo.toml not found. Refusing to evaluate."
   exit 1
 fi
@@ -58,7 +67,7 @@ git mv $(git ls-files --directory src Cargo.toml | sed 's/\/.*//g' | sort | uniq
 
 members_expression="${parent_folder_name}/*"
 
-cat << EOF > Cargo.toml
+cat <<EOF >"${path_to_root_toml}"
 [workspace]
 resolver = "2"
 
@@ -67,3 +76,4 @@ members = [
 ]
 EOF
 
+git add "${path_to_root_toml}"
