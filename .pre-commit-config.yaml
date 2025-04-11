@@ -1,0 +1,39 @@
+exclude: |
+  (?x)^(
+    .idea/.*
+  )$
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    # A collection of git hooks.
+    hooks:
+      - id: trailing-whitespace
+        # Trims trailing whitespace.
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+        # Makes sure files end in a newline and only a newline.
+      - id: check-yaml
+        # Checks that your YAML files are parseable.
+      - id: check-toml
+        # Attempts to load all TOML files to verify syntax.
+      - id: debug-statements
+        # Check for debugger imports
+      - id: check-added-large-files
+        # Prevent giant files from being committed.
+        args: [--maxkb=500]
+    #      - id: no-commit-to-branch
+    #        # No commits to master or main.
+    #        args: [--branch=master, --branch=main]
+
+  - repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    # https://pypi.org/project/pre-commit-update/
+    rev: v0.6.1
+    hooks:
+      - id: pre-commit-update
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.1.0
+    # Opinionated Code Formatter. For JS, CSS, Markdown, JSON, YAML and more.
+    hooks:
+      - id: prettier
