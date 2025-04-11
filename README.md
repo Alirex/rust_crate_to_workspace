@@ -45,6 +45,8 @@ Extra:
 Now you can commit the changes after running the script.
 Because, you may want to check the changes before committing and set specific commit message.
 
+It is safe to run it multiple times. If a workspace is already created, it will not be recreated.
+
 ### Why move in the "rust" folder?
 
 Because, in my case, I have a lot of content in the root folder.
