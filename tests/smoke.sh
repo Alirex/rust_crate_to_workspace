@@ -53,4 +53,52 @@ if "${script}" "${repo3}" 2>/dev/null; then fail "dirty tree must be refused"; f
 mkdir "${tmp}/empty" && git -C "${tmp}/empty" init --quiet
 if "${script}" "${tmp}/empty" 2>/dev/null; then fail "missing Cargo.toml must be refused"; fi
 
+# 5. A crate with tests/, build.rs, examples/, benches/ and a root README named by `readme =`.
+repo5="$(new_repo full)"
+(
+  cd "${repo5}"
+  mkdir tests examples benches
+  cat >build.rs <<'RS'
+fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+}
+RS
+  cat >tests/it.rs <<'RS'
+#[test]
+fn integration() {
+    assert_eq!(2 + 2, 4);
+}
+RS
+  printf 'fn main() {}\n' >examples/ex.rs
+  printf 'fn main() {}\n' >benches/b.rs
+  echo "# full" >README.md
+  sed -i.bak 's/^edition.*/&\nreadme = "README.md"\nbuild = "build.rs"\n\n[[bench]]\nname = "b"\npath = "benches\/b.rs"\nharness = false/' Cargo.toml
+  rm -f Cargo.toml.bak
+  git add -A && git commit --quiet -m extras
+  "${script}"
+)
+for moved in tests/it.rs build.rs examples/ex.rs benches/b.rs src/main.rs README.md; do
+  [[ -f ${repo5}/rust/full/${moved} ]] || fail "${moved} not in the crate"
+done
+for stayed in tests examples benches build.rs; do
+  [[ ! -e ${repo5}/${stayed} ]] || fail "${stayed} left at the root"
+done
+[[ -f ${repo5}/README.md ]] || fail "root README must stay"
+(cd "${repo5}" && cargo check --quiet --all-targets) || fail "extras: cargo check --all-targets failed"
+(cd "${repo5}" && cargo test --quiet) || fail "extras: cargo test failed"
+
+# 6. Paths that would not move are refused, and nothing changes.
+repo6="$(new_repo outside)"
+printf '\n[[bin]]\nname = "x"\npath = "tools/x.rs"\n' >>"${repo6}/Cargo.toml"
+mkdir "${repo6}/tools" && printf 'fn main() {}\n' >"${repo6}/tools/x.rs"
+git -C "${repo6}" add -A && git -C "${repo6}" commit --quiet -m tools
+if "${script}" "${repo6}" 2>/dev/null; then fail "target path outside the moved set must be refused"; fi
+[[ -d ${repo6}/src && ! -e ${repo6}/rust ]] || fail "refused run changed files"
+
+repo7="$(new_repo parentreadme)"
+sed -i.bak 's/^edition.*/&\nreadme = "..\/README.md"/' "${repo7}/Cargo.toml"
+rm -f "${repo7}/Cargo.toml.bak"
+git -C "${repo7}" add -A && git -C "${repo7}" commit --quiet -m readme
+if "${script}" "${repo7}" 2>/dev/null; then fail "readme outside the crate must be refused"; fi
+
 echo "OK"

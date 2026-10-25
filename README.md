@@ -25,6 +25,7 @@ Example result for a crate `demo`:
 Cargo.toml          (new, workspace)
 rust/demo/Cargo.toml
 rust/demo/src/main.rs
+(and rust/demo/tests, benches, examples, build.rs when the crate has them)
 ```
 
 ---
@@ -42,12 +43,21 @@ It restructures your project to be a workspace.
 Your crate is moved to "rust" folder. This can be customized via argument. This folder is marked as a folder for
 workspace members.
 
-Moved:
+Moved (with `git mv`, only what exists):
 
 - src (with content)
 - Cargo.toml
+- tests, benches, examples and build.rs
 
-Nothing else is moved. Because it is less predictable.
+Copied:
+
+- the file named by `readme = "..."` in `[package]` (if it is a path inside the crate and not already moved). It is
+  copied, not moved, because a README at the root is usually also the repository README. Delete either copy if you
+  do not need both.
+
+Nothing else is moved: `Cargo.lock`, `.git*`, `rust-toolchain.toml`, `.cargo/`, CI config and `target/` stay at the
+root. Paths in `Cargo.toml` (`build`, `[lib]`/`[[bin]]`/`[[test]]`/`[[example]]`/`[[bench]]` `path`) stay valid, as
+they are relative to the moved manifest. Path dependencies (`path = "../x"`) are not rewritten.
 
 Added:
 
@@ -62,8 +72,9 @@ Because, you may want to check the changes before committing and set specific co
 
 It is safe to run it multiple times. If a workspace is already created, it will not be recreated.
 
-It refuses (exit code 1) when the git tree is dirty, `Cargo.toml` is missing, a `[workspace]` already exists or the
-target folder exists. It needs bash 3.2+ (macOS works), git and a POSIX awk.
+It refuses (exit code 1) when the git tree is dirty, `Cargo.toml` is missing, a `[workspace]` already exists, the
+target folder exists, or a `readme`, `build` or target `path` points outside the crate or outside the moved
+folders (the workspace would not build). It needs bash 3.2+ (macOS works), git and a POSIX awk.
 
 ### Why move in the "rust" folder?
 
