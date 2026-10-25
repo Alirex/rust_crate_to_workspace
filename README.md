@@ -90,6 +90,10 @@ just dev-hooks   # install the git hooks
 just q-check     # the gate: all hooks, then the smoke test (tests/smoke.sh)
 ```
 
+## License
+
+[MIT](LICENSE.txt).
+
 ## Inspired by
 
 - <https://github.com/rust-lang/cargo/issues/7713>

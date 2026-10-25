@@ -2,3 +2,5 @@
 default: true
 MD013: false # line length: prettier owns the layout
 MD041: false # CLAUDE.md is the one-line import `@AGENTS.md`
+MD024:
+  siblings_only: true # Keep a Changelog repeats "Added" under each version

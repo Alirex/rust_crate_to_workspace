@@ -5,6 +5,10 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- MIT license (`LICENSE.txt`, #2).
+
 ## [0.1.0] - 2026-10-25
 
 First tagged version.
