@@ -8,6 +8,9 @@ and the project uses [Semantic Versioning](https://semver.org/).
 ### Added
 
 - MIT license (`LICENSE.txt`, #2).
+- The script also moves `tests/`, `benches/`, `examples/` and `build.rs` into the member folder, and copies the file
+  named by `readme =`; it refuses when a `readme`, `build` or target `path` points outside the crate or outside the
+  moved set (B-261025-crate-to-workspace-extra-dirs).
 
 ## [0.1.0] - 2026-10-25
 
