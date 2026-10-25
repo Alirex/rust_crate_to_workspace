@@ -1,56 +1,67 @@
 exclude: |
   (?x)^(
-    .idea/.*
+    \.idea/.*
   )$
 
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    # A collection of git hooks.
+    rev: v6.0.0
     hooks:
+      - id: check-merge-conflict
       - id: trailing-whitespace
-        # Trims trailing whitespace.
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
-        # Makes sure files end in a newline and only a newline.
       - id: check-yaml
-        # Checks that your YAML files are parseable.
       - id: check-toml
-        # Attempts to load all TOML files to verify syntax.
-      - id: debug-statements
-        # Check for debugger imports
       - id: check-added-large-files
-        # Prevent giant files from being committed.
         args: [--maxkb=500]
-    #      - id: no-commit-to-branch
-    #        # No commits to master or main.
-    #        args: [--branch=master, --branch=main]
-
-  - repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
-    # https://pypi.org/project/pre-commit-update/
-    rev: v0.6.1
-    hooks:
-      - id: pre-commit-update
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.1.0
-    # Opinionated Code Formatter. For JS, CSS, Markdown, JSON, YAML and more.
-    hooks:
-      - id: prettier
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
-    # Find bugs in your shell scripts.
-    rev: v0.10.0.1
+    # Finds bugs in shell scripts (rules: .shellcheckrc).
+    rev: v0.11.0.1-1
     hooks:
       - id: shellcheck
 
   - repo: https://github.com/scop/pre-commit-shfmt
-    # Format shell script files.
-    rev: v3.11.0-1
+    # Formats shell scripts.
+    rev: v3.14.1-1
     hooks:
       - id: shfmt
-        # --write: Write a result to file instead of stdout.
-        # --simplify: Simplify code.
-        # --indent: Indent width.
-        # --case-indent: Ensure "switch case" statements are indented.
         args: [--write, --simplify, --indent, "2", --case-indent]
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.50.0
+    hooks:
+      - id: markdownlint
+
+  - repo: https://github.com/Alirex/pre-commit-just
+    # Justfile formatter.
+    rev: v0.2.1
+    hooks:
+      - id: format-justfile
+
+  - repo: https://github.com/JoC0de/pre-commit-prettier
+    rev: v3.9.10
+    hooks:
+      - id: prettier
+        files: \.(json|ya?ml|md)$
+
+  - repo: https://github.com/gitleaks/gitleaks
+    # Secret scanning of staged changes; whole history: `just q-secrets`.
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+      - id: gitleaks
+        alias: gitleaks-history
+        name: gitleaks (whole history)
+        entry: gitleaks git --redact --verbose
+        stages: [manual]
+        always_run: true
+
+  - repo: https://gitlab.com/vojko.pribudic.foss/pre-commit-update
+    # https://pypi.org/project/pre-commit-update/
+    rev: v0.10.0
+    hooks:
+      - id: pre-commit-update

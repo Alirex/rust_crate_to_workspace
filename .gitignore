@@ -1,1 +1,16 @@
-.idea/git_toolbox_prj.xml
+# JetBrains: ignore all, keep the shared project files.
+.idea/**
+!.idea/.gitignore
+!.idea/*.iml
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/inspectionProfiles/
+!.idea/inspectionProfiles/Project_Default.xml
+
+# Agents
+.worktrees/
+.claude/worktrees/
+.claude/settings.local.json
+
+# Rust (scratch crates made by hand while testing)
+target/

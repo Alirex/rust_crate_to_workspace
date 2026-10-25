@@ -1,0 +1,4 @@
+# Structural markdown checks; prettier formats the files.
+default: true
+MD013: false # line length: prettier owns the layout
+MD041: false # CLAUDE.md is the one-line import `@AGENTS.md`
