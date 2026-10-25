@@ -21,6 +21,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - name: Install just
+        # The format-justfile hook needs the `just` binary.
+        run: uv tool install rust-just
       - name: Hooks
         # pre-commit-update bumps hook revisions: not a CI check.
         run: uvx prek run --all-files --show-diff-on-failure
