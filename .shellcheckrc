@@ -1,0 +1,6 @@
+# Strictest mode: every optional check on (practices/lint-strictness.md).
+enable=all
+external-sources=true
+
+# SC2310 / SC2312: the scripts test commands on purpose (`[[ -n "$(git status --porcelain)" ]]`).
+disable=SC2310,SC2312
