@@ -101,4 +101,22 @@ rm -f "${repo7}/Cargo.toml.bak"
 git -C "${repo7}" add -A && git -C "${repo7}" commit --quiet -m readme
 if "${script}" "${repo7}" 2>/dev/null; then fail "readme outside the crate must be refused"; fi
 
+# 8. Path dependencies (inline and dotted table) are rewritten; Cargo's automatic README is copied.
+mkdir -p "${tmp}/sib/src"
+printf '[package]\nname = "sib"\nversion = "0.1.0"\nedition = "2021"\n' >"${tmp}/sib/Cargo.toml"
+printf 'pub fn one() -> u8 {\n    1\n}\n' >"${tmp}/sib/src/lib.rs"
+repo8="$(new_repo pathdeps)"
+(
+  cd "${repo8}"
+  printf 'sib = { path = "../sib" }\n\n[build-dependencies.sib]\npath = "../sib"\n' >>Cargo.toml
+  printf 'fn main() {\n    assert_eq!(sib::one(), 1);\n}\n' >src/main.rs
+  echo "# pathdeps" >README.md
+  git add -A && git commit --quiet -m deps
+  "${script}" "${repo8}" crates/rust
+)
+member8="${repo8}/crates/rust/pathdeps"
+[[ $(grep -c 'path = "../../../../sib"' "${member8}/Cargo.toml") -eq 2 ]] || fail "path dependencies not rewritten"
+[[ -f ${member8}/README.md && -f ${repo8}/README.md ]] || fail "automatic README not copied"
+(cd "${repo8}" && cargo check --quiet) || fail "path dependencies: workspace does not build"
+
 echo "OK"

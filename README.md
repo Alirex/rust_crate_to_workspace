@@ -51,13 +51,16 @@ Moved (with `git mv`, only what exists):
 
 Copied:
 
-- the file named by `readme = "..."` in `[package]` (if it is a path inside the crate and not already moved). It is
-  copied, not moved, because a README at the root is usually also the repository README. Delete either copy if you
-  do not need both.
+- the file named by `readme = "..."` in `[package]` (if it is a path inside the crate and not already moved), or,
+  without a `readme` key, the `README.md`, `README.txt` or `README` Cargo would pick by itself. It is copied, not
+  moved, because a README at the root is usually also the repository README. Delete either copy if you do not need
+  both.
 
 Nothing else is moved: `Cargo.lock`, `.git*`, `rust-toolchain.toml`, `.cargo/`, CI config and `target/` stay at the
 root. Paths in `Cargo.toml` (`build`, `[lib]`/`[[bin]]`/`[[test]]`/`[[example]]`/`[[bench]]` `path`) stay valid, as
-they are relative to the moved manifest. Path dependencies (`path = "../x"`) are not rewritten.
+they are relative to the moved manifest. Relative path dependencies (`path = "../x"` in any `dependencies` table or
+`[patch.*]`) get one `../` per added folder level, so `rust/<crate>` turns `../x` into `../../../x`. `include` and
+`exclude` globs are not rewritten: the script warns when they exist.
 
 Added:
 
