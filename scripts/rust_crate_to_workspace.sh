@@ -6,7 +6,8 @@
 #   folder_for_members  folder that gets the crate and holds future members (default: rust)
 #
 # Moves src/ and Cargo.toml to <folder>/<crate_name>/ with `git mv`, together with tests/, benches/, examples/ and
-# build.rs when they exist. The file named by `readme =` is copied (the original stays, it is usually the repo README).
+# build.rs when they exist. The file named by `readme =` is copied (the original stays, it is usually the repo README);
+# without that key, the README Cargo would pick by itself. Relative `path` dependencies get a `../` per added level.
 # Writes a workspace Cargo.toml and stages it. Everything else (Cargo.lock, .git*, CI, .cargo/, target/) stays.
 # Refuses on a dirty git tree, a missing Cargo.toml, an existing [workspace], an existing target folder, or a
 # readme/build/target path (`path = ...` of [lib], [[bin]], [[example]], [[test]], [[bench]]) that points outside
@@ -121,6 +122,57 @@ for moved in ${moved_paths}; do
   git mv -- "${moved}" "${new_folder_for_crate}/"
 done
 git mv -- Cargo.toml "${new_folder_for_crate}/"
+
+# Without a `readme` key Cargo picks README.md, README.txt or README next to the manifest: copy that one too.
+if ! awk '
+  /^[[:space:]]*\[/ { in_package = ($0 ~ /^[[:space:]]*\[package\]/) }
+  in_package && /^[[:space:]]*readme[[:space:]]*=/ { found = 1 }
+  END { exit !found }
+' "${new_folder_for_crate}/Cargo.toml"; then
+  for candidate in README.md README.txt README; do
+    if [[ -f ${candidate} ]]; then
+      readme_to_copy="${candidate}"
+      break
+    fi
+  done
+fi
+
+# Relative `path` dependencies now resolve from the member folder: prefix them with one `../` per added level.
+depth_prefix=""
+rest="${parent_folder_name%/}/${crate_name}"
+while [[ -n ${rest} ]]; do
+  depth_prefix="../${depth_prefix}"
+  [[ ${rest} == */* ]] || break
+  rest="${rest#*/}"
+done
+moved_toml="${new_folder_for_crate}/Cargo.toml"
+awk -v prefix="${depth_prefix}" '
+  /^[[:space:]]*\[/ {
+    in_deps = ($0 ~ /^[[:space:]]*\[(.*\.)?(dependencies|dev-dependencies|dev_dependencies|build-dependencies|build_dependencies)(\..*)?\]/ \
+      || $0 ~ /^[[:space:]]*\[patch\./)
+  }
+  in_deps && !/^[[:space:]]*\[/ {
+    out = ""
+    rest = $0
+    while (match(rest, /(^|[[:space:]{,])path[[:space:]]*=[[:space:]]*"/)) {
+      out = out substr(rest, 1, RSTART + RLENGTH - 1)
+      rest = substr(rest, RSTART + RLENGTH)
+      if (rest !~ /^\// && rest !~ /^[A-Za-z]:/) {
+        out = out prefix
+        rewritten++
+      }
+    }
+    $0 = out rest
+  }
+  { print }
+  END { if (rewritten) { printf "Rewrote %d path dependencies (prefix %s)\n", rewritten, prefix > "/dev/stderr" } }
+' "${moved_toml}" >"${moved_toml}.tmp"
+mv -- "${moved_toml}.tmp" "${moved_toml}"
+git add -- "${moved_toml}"
+
+if grep -Eq '^[[:space:]]*(include|exclude)[[:space:]]*=' "${moved_toml}"; then
+  echo "Warning: Cargo.toml has include/exclude; its globs now match from ${parent_folder_name}/${crate_name}/, check them." >&2
+fi
 
 if [[ -n ${readme_to_copy} && -f ${readme_to_copy} ]]; then
   echo "Copying ${readme_to_copy} (readme) into the crate; the original stays"

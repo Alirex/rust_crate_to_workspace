@@ -11,6 +11,8 @@ and the project uses [Semantic Versioning](https://semver.org/).
 - The script also moves `tests/`, `benches/`, `examples/` and `build.rs` into the member folder, and copies the file
   named by `readme =`; it refuses when a `readme`, `build` or target `path` points outside the crate or outside the
   moved set (B-261025-crate-to-workspace-extra-dirs).
+- Relative path dependencies are rewritten for the member folder, Cargo's automatic README (no `readme` key) is
+  copied, and `include`/`exclude` get a warning (B-261025-crate-to-workspace-v020).
 
 ## [0.1.0] - 2026-10-25
 
