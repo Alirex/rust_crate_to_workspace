@@ -4,6 +4,8 @@ A single bash script, `scripts/rust_crate_to_workspace.sh`, that turns a git-tra
 workspace (`src` and `Cargo.toml` move to `<folder>/<crate>/` with `git mv`, a workspace `Cargo.toml` is staged).
 It runs from `curl | bash`, so it must stay a single self-contained file.
 
+- The README is the front door: it starts with how to run the repo and is updated in the same commit as any change to a command, recipe, config key, check or layout; run its Quick start once before landing ([HQ docs-match-code](https://github.com/evocaslab/hq/blob/main/practices/docs-match-code.md#the-readme-is-the-front-door)).
+
 ## Commands
 
 [just](https://just.systems) is the entry point (`just` lists recipes).
