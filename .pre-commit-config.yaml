@@ -65,3 +65,13 @@ repos:
     rev: v0.10.0
     hooks:
       - id: pre-commit-update
+
+  - repo: local
+    hooks:
+      - id: needs-fresh
+        # needs.yaml lints, matches the ci workflows, and the README table is current.
+        name: needs.yaml is current
+        entry: bash -c 'scripts/needs.py lint && scripts/needs.py ci && scripts/needs.py render --check'
+        language: system
+        files: ^(needs\.yaml|README\.md|\.github/workflows/.*|scripts/needs\.py)$
+        pass_filenames: false

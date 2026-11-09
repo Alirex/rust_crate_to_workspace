@@ -1,0 +1,85 @@
+# What this repo needs, by context. Schema and rules: HQ practices/needs-by-context.md.
+# Check:  scripts/needs.py lint && scripts/needs.py check --context develop
+# Render: scripts/needs.py render   (the README table between the needs markers)
+version: 1
+needs:
+  - kind: tool
+    name: bash
+    min: "3.2"
+    contexts: [run, develop, test, ci]
+    level: required
+    why: the script is bash 3.2 (macOS), run as `curl | bash`
+    check: command
+    fix: install bash
+  - kind: tool
+    name: git
+    contexts: [run, develop, test, ci, release]
+    level: required
+    why: the script moves files with `git mv` and stages the result; releases are tags
+    check: command
+    fix: install git
+  - kind: tool
+    name: awk
+    contexts: [run, test]
+    level: required
+    why: the script reads Cargo.toml with awk (BSD or GNU)
+    check: command
+    fix: install awk (POSIX awk or gawk)
+  - kind: tool
+    name: curl
+    contexts: [run]
+    level: optional
+    why: the README runs the script as `curl | bash`
+    fallback: clone the repo and run scripts/rust_crate_to_workspace.sh
+    check: command
+    fix: install curl
+  - kind: tool
+    name: cargo
+    contexts: [test, ci]
+    level: required
+    why: tests/smoke.sh runs `cargo new` and `cargo check` on the converted crates
+    check: command
+    fix: install rustup (https://rustup.rs)
+  - kind: tool
+    name: just
+    min: "1.40"
+    contexts: [develop, ci]
+    level: required
+    why: every command is a recipe; rust-just is installed with uv tool in CI
+    check: command
+    fix: uv tool install rust-just
+  - kind: tool
+    name: prek
+    contexts: [develop, ci]
+    level: required
+    why: runs the quality gate hooks
+    check: command
+    fix: uv tool install prek
+  - kind: tool
+    name: uv
+    contexts: [develop, ci]
+    level: required
+    why: installs prek and rust-just
+    check: command
+    fix: curl -LsSf https://astral.sh/uv/install.sh | sh
+  - kind: tool
+    name: node
+    contexts: [develop, ci]
+    level: required
+    why: the markdownlint and prettier hooks need Node.js on PATH
+    check: command
+    fix: install Node LTS (https://nodejs.org)
+  - kind: tool
+    name: gh
+    contexts: [develop, release]
+    level: optional
+    why: "`gh release create` makes the GitHub release from the changelog"
+    fallback: use the GitHub web UI
+    check: command
+    fix: install GitHub CLI, then gh auth login
+  - kind: network
+    contexts: [run, develop, test, ci]
+    level: required
+    why: the script is fetched from GitHub; prek fetches hook repos
+    check: none
+    hosts: [raw.githubusercontent.com, github.com]
