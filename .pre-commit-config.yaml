@@ -20,7 +20,7 @@ repos:
 
   - repo: https://github.com/shellcheck-py/shellcheck-py
     # Finds bugs in shell scripts (rules: .shellcheckrc).
-    rev: v0.11.0.1-1
+    rev: v0.11.0.1
     hooks:
       - id: shellcheck
 
@@ -38,7 +38,7 @@ repos:
 
   - repo: https://github.com/Alirex/pre-commit-just
     # Justfile formatter.
-    rev: v0.2.1
+    rev: v0.2.2
     hooks:
       - id: format-justfile
 
