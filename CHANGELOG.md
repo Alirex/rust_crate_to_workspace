@@ -5,6 +5,12 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+
+- Git history rewritten on 2026-11-28 to replace a personal commit e-mail: every commit SHA changed, and the tag
+  `v0.1.0` keeps its name but points at the rewritten commit. A `curl | bash` URL that names a commit SHA needs the
+  tag or `main` instead. A clone from before that date needs `git fetch --force --tags` and a reset of `main`.
+
 ## [0.2.0] - 2026-10-25
 
 ### Added
