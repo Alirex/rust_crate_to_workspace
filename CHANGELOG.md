@@ -7,8 +7,12 @@ and the project uses [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
+- The README downloads the script, shows it and then runs it, instead of piping `curl` into `bash`.
+- Public-repo docs: brand kit, `ARCHITECTURE.md`, user stories, a decision record, `dossier.yaml`, an agent skill in
+  `skills/rust-crate-to-workspace/`, and a release workflow that creates the GitHub release from a `v*` tag.
+
 - Git history rewritten on 2026-11-28 to replace a personal commit e-mail: every commit SHA changed, and the tag
-  `v0.1.0` keeps its name but points at the rewritten commit. A `curl | bash` URL that names a commit SHA needs the
+  `v0.1.0` keeps its name but points at the rewritten commit. A download URL that names a commit SHA needs the
   tag or `main` instead. A clone from before that date needs `git fetch --force --tags` and a reset of `main`.
 
 ## [0.2.0] - 2026-10-25

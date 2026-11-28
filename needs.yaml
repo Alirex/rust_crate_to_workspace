@@ -8,7 +8,7 @@ needs:
     min: "3.2"
     contexts: [run, develop, test, ci]
     level: required
-    why: the script is bash 3.2 (macOS), run as `curl | bash`
+    why: the script is bash 3.2 (macOS), downloaded and run with `bash`
     check: command
     fix: install bash
   - kind: tool
@@ -29,7 +29,7 @@ needs:
     name: curl
     contexts: [run]
     level: optional
-    why: the README runs the script as `curl | bash`
+    why: the README downloads the script with curl
     fallback: clone the repo and run scripts/rust_crate_to_workspace.sh
     check: command
     fix: install curl
@@ -61,7 +61,7 @@ needs:
     level: required
     why: installs prek and rust-just
     check: command
-    fix: curl -LsSf https://astral.sh/uv/install.sh | sh
+    fix: curl -LsSf https://astral.sh/uv/install.sh | sh # bulwark:ignore agent-pipe-to-shell install hint text, never run by a script
   - kind: tool
     name: node
     contexts: [develop, ci]

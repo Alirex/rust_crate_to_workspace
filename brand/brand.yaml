@@ -1,0 +1,62 @@
+# Brand source of truth for rust_crate_to_workspace. Checked with `brandforge check .` (nothing is built yet).
+# Prose: ../docs/brand.md. The display name lives only here (`name`).
+schema: 1
+languages:
+  - { code: en, label: EN, name: English }
+default_language: en
+name:
+  en: rust_crate_to_workspace
+tagline:
+  en: "One crate in, one workspace out."
+mission:
+  en: "Turn a git-tracked Rust crate into a cargo workspace with one script, keeping the git history of every moved file."
+vision:
+  en: "Growing a crate into a workspace is a reviewed git diff, not an afternoon of moving files by hand."
+roles:
+  paper: { light: "#FFFFFF", dark: "#17130D", meaning: { en: Page background } }
+  ink:
+    {
+      light: "#1F1A12",
+      dark: "#F0EAE0",
+      meaning: { en: Body text and the mark },
+    }
+  muted: { light: "#5A5246", dark: "#BDB3A3", meaning: { en: Secondary text } }
+  primary:
+    {
+      light: "#8A4B08",
+      dark: "#F0A85A",
+      meaning: { en: "The one accent: links and the mark's dot" },
+    }
+  on-primary:
+    { light: "#FFFFFF", dark: "#17130D", meaning: { en: Text on the accent } }
+  focus:
+    { light: "#1F1A12", dark: "#F0EAE0", meaning: { en: Keyboard focus ring } }
+pairs:
+  - { fg: ink, bg: paper, kind: text, level: aaa, use: Body text }
+  - { fg: muted, bg: paper, kind: text, level: aa, use: Secondary text }
+  - { fg: primary, bg: paper, kind: text, level: aa, use: Links }
+  - {
+      fg: on-primary,
+      bg: primary,
+      kind: text,
+      level: aa,
+      use: Label on the accent,
+    }
+  - { fg: focus, bg: paper, kind: ui, level: aa, use: Focus ring }
+fonts:
+  mono:
+    family: JetBrains Mono
+    fallback: [ui-monospace, SFMono-Regular, Menlo, Consolas, monospace]
+    license: OFL-1.1
+    note: The name and code samples; the project is a developer tool.
+assets:
+  - { id: mark, form: mark, path: masters/mark.svg, label: { en: Mark } }
+  - {
+      id: small-mark,
+      form: small-mark,
+      path: masters/small-mark.svg,
+      label: { en: Small mark (16 to 24 px) },
+    }
+legal:
+  owner: Alirex
+  artwork_license: CC-BY-4.0
